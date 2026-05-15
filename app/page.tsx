@@ -1,15 +1,16 @@
 'use client';
 
-import { Footer } from "@/components/footer";
-import { Grid } from "@/components/grid";
-import { FloatingNav } from "@/components/ui/floating-nav";
-import { RecentProjects } from "@/components/recent-projects";
-import { navItems } from "@/data";
 import dynamic from 'next/dynamic';
+import { navItems } from "@/data";
 
+// Importações dinâmicas para componentes que usam APIs do navegador (WebGL, Lottie, Document, etc)
 const App = dynamic(() => import('@/components/band/App'), { ssr: false });
 const ColorBends = dynamic(() => import('@/components/ColorBends'), { ssr: false });
-import CardSection from "@/components/card/CardSection";
+const Grid = dynamic(() => import('@/components/grid').then(mod => mod.Grid), { ssr: false });
+const RecentProjects = dynamic(() => import('@/components/recent-projects').then(mod => mod.RecentProjects), { ssr: false });
+const Footer = dynamic(() => import('@/components/footer').then(mod => mod.Footer), { ssr: false });
+const FloatingNav = dynamic(() => import('@/components/ui/floating-nav').then(mod => mod.FloatingNav), { ssr: false });
+const CardSection = dynamic(() => import('@/components/card/CardSection'), { ssr: false });
 
 const MainPage = () => {
   return (
