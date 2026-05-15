@@ -6,7 +6,7 @@ import { Canvas, extend, useThree, useFrame } from '@react-three/fiber';
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
-import { Image } from '@react-three/drei';
+import { Image, Text } from '@react-three/drei';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -18,6 +18,66 @@ const IMAGE_PATH = '/assets/port.png';
 useGLTF.preload(GLTF_PATH);
 useTexture.preload(TEXTURE_PATH);
 
+const textOptions = [
+  "hello world_",
+  "Bernardo.dev",
+  "/portfolio",
+  "BA.dev",
+  "projects()"
+];
+
+function AnimatedText({ position, fontSize }) {
+  const [displayText, setDisplayText] = useState(textOptions[0]);
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const chars = "!<>-_\\\\/[]{}—=+*^?#________";
+    const nextIndex = (index + 1) % textOptions.length;
+    const nextWord = textOptions[nextIndex];
+    
+    const timeout = setTimeout(() => {
+      let iteration = 0;
+      const maxLength = Math.max(displayText.length, nextWord.length);
+      
+      const interval = setInterval(() => {
+        setDisplayText(
+          nextWord
+            .padEnd(maxLength, ' ')
+            .split("")
+            .map((letter, i) => {
+              if (i < iteration) {
+                return nextWord[i];
+              }
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("")
+        );
+        
+        if (iteration >= maxLength) {
+          clearInterval(interval);
+          setDisplayText(nextWord);
+          setIndex(nextIndex);
+        }
+        
+        iteration += 1 / 3;
+      }, 30);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [index, displayText]);
+
+  return (
+    <Text 
+      position={position} 
+      fontSize={fontSize} 
+      letterSpacing={0.02} 
+    >
+      <meshBasicMaterial color="#ffffff" toneMapped={false} />
+      {displayText}
+    </Text>
+  );
+}
+
 export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -26,8 +86,7 @@ export default function App() {
         <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
           <Band />
         </Physics>
-        <Environment background blur={0.75}>
-          <color attach="background" args={['black']} />
+        <Environment blur={0.75}>
           <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
           <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
           <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
@@ -49,10 +108,8 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
   
-  // Deteksi mobile berdasarkan lebar layar
   const isMobile = width < 768;
   
-  // Posisi responsif untuk card - DIPERBAIKI SINTAKS
   const cardPosition = isMobile ? [4, 5, 0] : [3, 4, 0];
   const initialJointPositions = isMobile ? [
     [0.3, 0, 0], 
@@ -73,10 +130,11 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-    if (hovered) {
-      document.body.style.cursor = dragged ? 'grabbing' : 'grab';
-      return () => void (document.body.style.cursor = 'auto');
-    }}
+      if (hovered) {
+        document.body.style.cursor = dragged ? 'grabbing' : 'grab';
+        return () => void (document.body.style.cursor = 'auto');
+      }
+    }
   }, [hovered, dragged]);
 
   useFrame((state, delta) => {
@@ -129,11 +187,24 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
             onPointerOut={() => hover(false)}
             onPointerUp={(e) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
             onPointerDown={(e) => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}>
-            <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial map={materials.base.map} map-anisotropy={16} clearcoat={1} clearcoatRoughness={0.15} roughness={0.3} metalness={0.5} />
-            </mesh>
-            <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
-            <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
+            {nodes.card && (
+              <mesh geometry={nodes.card.geometry}>
+                <meshPhysicalMaterial 
+                  map={materials.Materiais?.map || null} 
+                  {...(materials.Materiais?.map ? { "map-anisotropy": 16 } : {})}
+                  clearcoat={1} 
+                  clearcoatRoughness={0.15} 
+                  roughness={0.3} 
+                  metalness={0.5} 
+                />
+              </mesh>
+            )}
+            {nodes.clip && (
+              <mesh geometry={nodes.clip.geometry} material={materials.metal || null} material-roughness={0.3} />
+            )}
+            {nodes.clamp && (
+              <mesh geometry={nodes.clamp.geometry} material={materials.metal || null} />
+            )}
           </group>
         </RigidBody>
       </group>
@@ -142,12 +213,12 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
         <meshLineMaterial color="white" depthTest={false} resolution={[width, height]} useMap map={texture} repeat={[-3, 1]} lineWidth={1} />
       </mesh>
       
-      {/* Image portofolio - hanya tampil di desktop */}
+      {/* Texto Animado do Portfólio */}
       {!isMobile && (
-        <Image url={IMAGE_PATH} position={[0, 0, -2]} scale={[10, 1, 2]} />
+        <AnimatedText position={[0, 0, -2]} fontSize={1.2} />
       )}
       {isMobile && (
-        <Image url={IMAGE_PATH} position={[0, 0, -25]} scale={[10, 1, 2]} />
+        <AnimatedText position={[0, 0, -25]} fontSize={2.5} />
       )}
     </>
   );

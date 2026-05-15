@@ -11,6 +11,7 @@ import { useState } from "react";
 
 import { navItems } from "@/data";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 type FloatingNavProps = {
   navItems: typeof navItems;
@@ -18,6 +19,7 @@ type FloatingNavProps = {
 };
 
 export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
+  const { language, setLanguage } = useLanguage();
   const { scrollY } = useScroll();
 
   const [visible, setVisible] = useState(true);
@@ -65,9 +67,26 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
               "relative flex items-center space-x-1 text-neutral-600 hover:text-neutral-500 dark:text-neutral-50 dark:hover:text-neutral-300"
             )}
           >
-            <span className="!cursor-pointer text-sm">{navItem.name}</span>
+            <span className="!cursor-pointer text-sm">{navItem.name[language]}</span>
           </Link>
         ))}
+
+        {/* Language Switcher */}
+        <div className="flex gap-3 text-xs font-bold ml-4 border-l border-white/20 pl-4 items-center h-full">
+          <button 
+            onClick={() => setLanguage('pt')} 
+            className={cn("transition-colors duration-200", language === 'pt' ? "text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" : "text-white/40 hover:text-white")}
+          >
+            PT
+          </button>
+          <span className="text-white/20">|</span>
+          <button 
+            onClick={() => setLanguage('en')} 
+            className={cn("transition-colors duration-200", language === 'en' ? "text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" : "text-white/40 hover:text-white")}
+          >
+            EN
+          </button>
+        </div>
       </motion.nav>
     </AnimatePresence>
   );

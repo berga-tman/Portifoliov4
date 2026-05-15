@@ -11,9 +11,12 @@ import Link from "next/link";
 import { links } from "@/config";
 import animationData from "@/data/confetti.json";
 import { cn } from "@/lib/utils";
+import { FaPython, FaJsSquare, FaReact, FaNodeJs, FaHtml5, FaGitAlt, FaDatabase } from "react-icons/fa";
+import { SiTypescript } from "react-icons/si";
 
 import { BackgroundGradientAnimation } from "./background-gradient-animation";
 import { MagicButton } from "./magic-button";
+import { useLanguage } from "@/context/LanguageContext";
 
 
 export const BentoGrid = ({
@@ -50,16 +53,17 @@ export const BentoGridItem = ({
 }: {
   id?: number;
   className?: string;
-  title?: string | React.ReactNode;
-  description?: string | React.ReactNode;
-  title2?: string | React.ReactNode;
-  description2?: string | React.ReactNode;
+  title?: any;
+  description?: any;
+  title2?: any;
+  description2?: any;
   img?: string;
-  description3?: string | React.ReactNode;
+  description3?: any;
   imgClassName?: string;
   titleClassName?: string;
   spareImg?: string;
 }) => {
+  const { language } = useLanguage();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -129,23 +133,23 @@ export const BentoGridItem = ({
         >
           
           <div className="z-10 max-w-96 font-sans text-lg font-bold lg:text-3xl">
-            {title}
+            {title && title[language]}
           </div>
 
           <div className="z-10 font-sans text-sm font-semibold text-[#c1c2d3] md:text-xs lg:text-base">
-            {description}
+            {description && description[language]}
           </div>
 
           <div className="z-10 max-w-96 font-sans text-lg font-bold lg:text-3xl mt-3">
-            {title2}
+            {title2 && title2[language]}
           </div>
 
           <div className="z-10 font-sans text-sm font-semibold text-[#c1c2d3] md:text-xs lg:text-base whitespace-pre-line">
-            {description2}
+            {description2 && description2[language]}
           </div>
 
           <div className="z-10 font-sans text-sm font-light text-[#c1c2d3] md:text-xs lg:text-base whitespace-pre-line ml-10">
-            {description3}
+            {description3 && description3[language]}
           </div>
           
           <div className="flex items-center gap-6 md:gap-3 mt-6">
@@ -169,20 +173,34 @@ export const BentoGridItem = ({
               ))}
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 mt-3">
-  {id === 4 &&
-    companies.map(({ id, img, name }) => (
-      <div key={id} className="flex justify-center">
-        <Image
-          height={29}
-          width={43}
-          src={img}
-          alt={`${name}'s logo`}
-          className="w-10 sm:w-12 md:w-14 invert"
-        />
-      </div>
-    ))}
-</div>
+          {id === 4 && (
+            <div className="grid grid-cols-4 sm:grid-cols-4 gap-y-6 mt-4">
+              <div className="flex justify-center group" title="Python">
+                <FaPython className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#3776AB] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="JavaScript">
+                <FaJsSquare className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#F7DF1E] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="TypeScript">
+                <SiTypescript className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#3178C6] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="React">
+                <FaReact className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#61DAFB] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="Node.js">
+                <FaNodeJs className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#339933] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="HTML & CSS">
+                <FaHtml5 className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#E34F26] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="Git">
+                <FaGitAlt className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#F05032] hover:scale-110 transition-all duration-300" />
+              </div>
+              <div className="flex justify-center group" title="SQL">
+                <FaDatabase className="text-4xl sm:text-5xl text-gray-400 group-hover:text-[#4479A1] hover:scale-110 transition-all duration-300" />
+              </div>
+            </div>
+          )}
 
 
 
@@ -205,7 +223,7 @@ export const BentoGridItem = ({
               </button>
 
               <MagicButton
-                title={copied ? "Email copied!" : "Copy my email"}
+                title={copied ? (language === 'pt' ? "Email copiado!" : "Email copied!") : (language === 'pt' ? "Copiar meu email" : "Copy my email")}
                 icon={<IoCopyOutline />}
                 otherClasses="!bg-[#161a31]"
                 handleClick={handleCopy}

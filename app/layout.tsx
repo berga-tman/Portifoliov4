@@ -5,6 +5,7 @@ import type { PropsWithChildren } from "react";
 import { siteConfig } from "@/config";
 
 import { ThemeProvider } from "./provider";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 import "./globals.css";
 
@@ -21,9 +22,11 @@ const RootLayout = ({ children }: Readonly<PropsWithChildren>) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
-          {children}
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+            {children}
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
