@@ -6,7 +6,8 @@ import {
   FaChartBar, FaNetworkWired, FaChartPie, FaDatabase, 
   FaPython, FaCode, FaJsSquare, FaReact, FaHtml5, FaGitAlt, FaNodeJs 
 } from "react-icons/fa";
-import PrismaticBurst from "@/components/PrismaticBurst";
+import dynamic from 'next/dynamic';
+const PrismaticBurst = dynamic(() => import('@/components/PrismaticBurst'), { ssr: false });
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function CertificadosPage() {

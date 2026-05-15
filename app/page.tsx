@@ -5,9 +5,11 @@ import { Grid } from "@/components/grid";
 import { FloatingNav } from "@/components/ui/floating-nav";
 import { RecentProjects } from "@/components/recent-projects";
 import { navItems } from "@/data";
-import App from '@/components/band/App';
+import dynamic from 'next/dynamic';
+
+const App = dynamic(() => import('@/components/band/App'), { ssr: false });
+const ColorBends = dynamic(() => import('@/components/ColorBends'), { ssr: false });
 import CardSection from "@/components/card/CardSection";
-import ColorBends from "@/components/ColorBends";
 
 const MainPage = () => {
   return (
