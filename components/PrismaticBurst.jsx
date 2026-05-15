@@ -203,6 +203,8 @@ const toPx = v => {
 };
 
 const PrismaticBurst = ({
+  className = '',
+  style = {},
   intensity = 2,
   speed = 0.5,
   animationType = 'rotate3d',
@@ -471,7 +473,7 @@ const PrismaticBurst = ({
     program.uniforms.uColorCount.value = count;
   }, [intensity, speed, animationType, colors, distort, offset, rayCount]);
 
-  return <div className="prismatic-burst-container" ref={containerRef} />;
+  return <div className={`prismatic-burst-container ${className}`} style={style} ref={containerRef} />;
 };
 
 export default PrismaticBurst;
