@@ -25,6 +25,9 @@ export const siteConfig: Metadata = {
     name: links.ownerName,
     url: "https://github.com/berga-tman",
   },
+  icons: {
+    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg",
+  },
   openGraph: {
     type: "website",
     locale: "pt_BR",
