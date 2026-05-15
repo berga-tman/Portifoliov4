@@ -55,7 +55,7 @@ export const RecentProjects = () => {
                     height={300}
                     width={464}
                     src={img}
-                    alt={title}
+                    alt={title[language]}
                     className="absolute bottom-0 z-10"
                   />
                 </div>
